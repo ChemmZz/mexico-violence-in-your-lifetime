@@ -71,10 +71,10 @@
             </div>
             <div class="text-side">
                 <div class="text-content">
-                    <h2>The Year You Were Born</h2>
+                    <h2 id="birth-heading">The Year You Were Born</h2>
                     <p id="birth-text">In <span id="birth-year-text"></span>, Mexico recorded</p>
                     <div class="stat" id="birth-stat"></div>
-                    <p>This was the state of violence when you entered the world.</p>
+                    <p id="birth-subtitle">This was the state of violence when you entered the world.</p>
                 </div>
             </div>
         </div>
@@ -91,11 +91,11 @@
             <div class="text-side">
                 <div class="text-content">
                     <h2>The Drug War Begins</h2>
-                    <p>Starting in 2006, the government launched a military crackdown on drug cartels. 
+                    <p id="drugwar-intro">Starting in 2006, the government launched a military crackdown on drug cartels. 
                     The strategy backfired catastrophically.</p>
-                    <p>By 2011, homicides had exploded to unprecedented levels.</p>
+                    <p id="drugwar-middle">By 2011, homicides had exploded to unprecedented levels:</p>
                     <div class="stat">27,213 homicides</div>
-                    <p>This was the peak of the first wave—more than <span id="drugwar-increase"></span> from your birth year.</p>
+                    <p id="drugwar-closing">This was the peak of the first wave, more than <span id="drugwar-increase"></span> from your birth year.</p>
                 </div>
             </div>
         </div>
@@ -112,12 +112,9 @@
             <div class="text-side">
                 <div class="text-content">
                     <h2>The Full Story</h2>
-                    <p>After a brief decline, violence surged again. 2020 became the deadliest year in modern Mexican history.</p>
+                    <p id="full-intro">After a brief decline, violence surged again. 2020 became the deadliest year in modern Mexican history with:</p>
                     <div class="stat">36,773 homicides</div>
-                    <p>Today, violence remains at historically high levels. The crisis continues to devastate communities across Mexico.</p>
-                    <p style="margin-top: 30px; padding-top: 30px; border-top: 2px solid #eee;">
-                        The area in red represents your lifetime every year since you were born.
-                    </p>
+                    <p id="full-middle">Today, violence remains at historically high levels. The crisis continues to devastate communities across Mexico.</p>
                 </div>
             </div>
         </div>
@@ -134,11 +131,14 @@
             <div class="text-side">
                 <div class="text-content">
                     <h2>In Your Lifetime</h2>
-                    <p>Since you were born in <span id="cumulative-year"></span>, this many people have been murdered in Mexico:</p>
+                    <p id="cumulative-intro">Since you were born in <span id="cumulative-year"></span>, this many people have been murdered in Mexico:</p>
                     <div class="cumulative-stat" id="cumulative-total"></div>
-                    <p class="cumulative-note">That's <span id="cumulative-daily"></span> people per day, every day, for your entire life.</p>
+                    <p id="cumulative-note" class="cumulative-note">That's <span id="cumulative-daily"></span> people per day, every day, for your entire life.</p>
                     <p style="margin-top: 40px; font-weight: 600; font-size: 1.3rem; color: #333;">
                         This is not normal. Every number represents a life lost, a family destroyed, a community traumatized.
+                    </p>
+                    <p id="full-closing" style="margin-top: 30px; padding-top: 30px; border-top: 2px solid #eee;">
+                        The area in red represents your lifetime, every year since you were born.
                     </p>
                 </div>
             </div>
@@ -156,10 +156,10 @@
             <div class="text-side">
                 <div class="text-content">
                     <h2>People Like You</h2>
-                    <p>Violence doesn't discriminate by age, but some groups bear the heaviest burden.</p>
-                    <p>Since you were born in <span id="age-birth-year"></span>, this many people in your age group have been murdered:</p>
+                    <p id="age-intro">Violence doesn't discriminate by age, but some groups bear the heaviest burden.</p>
+                    <p id="age-question">Since you were born in <span id="age-birth-year"></span>, this many people in your age group have been murdered:</p>
                     <div class="cumulative-stat" id="age-total"></div>
-                    <p class="cumulative-note">That's people who were <span id="age-range-text"></span> years old when they died.</p>
+                    <p id="age-closing" class="cumulative-note">That's people who were <span id="age-range-text"></span> years old when they died.</p>
                 </div>
             </div>
         </div>
@@ -171,11 +171,11 @@
             <!-- State selector -->
             <div class="state-selector-wrapper" id="state-selector-container">
                 <div class="selector-box">
-                    <label for="state-select">Where were you born?</label>
-                            <input id="state-search" type="text" placeholder="Search state..." style="display:none; width:100%; padding:8px; margin:8px 0; box-sizing:border-box;" />
+                    <label id="state-selector-label" for="state-select">Where were you born?</label>
                             <select id="state-select" name="state-select"></select>
                             <span id="state-loading" style="display:none; margin-left:8px; font-size:0.95rem; color:#666;">Loading…</span>
                             <button id="state-continue-btn" class="continue-btn">Continue</button>
+                            <button id="skip-state-btn" class="continue-btn" style="margin-left: 10px; display: block;">Skip</button>
                 </div>
             </div>
             
@@ -209,7 +209,7 @@
         <div class="content-container" style="flex-direction: column; max-width: 1200px;">
             <div class="text-content" style="text-align: center; margin-bottom: 30px;">
                 <h2>Explore the Nation</h2>
-                <p>See how violence has affected every state in Mexico from 1990 to 2024</p>
+                <p id="map-intro">See how violence has affected every state in Mexico from 1990 to 2024</p>
             </div>
             
             <!-- Map and controls -->
@@ -387,8 +387,16 @@
             }
         });
 
+        document.getElementById('state-select').addEventListener('change', function() {
+            if (this.value) {
+                document.getElementById('state-continue-btn').classList.add('visible');
+            }
+        });
+
         document.getElementById('birth-continue-btn').addEventListener('click', function() {
             birthYear = +document.getElementById('year-select').value;
+            
+            console.log("Birth year:", birthYear);
             
             // Check if data is ready before scrolling
             if (ageData.length > 0) {
@@ -408,7 +416,57 @@
             }
         });
 
+        // Helper function to update conditional text
+        function updateConditionalText() {
+            // SECTION 1: BIRTH YEAR
+            if (birthYear === 1990) {
+                document.getElementById('birth-heading').textContent = "The Last 35 Years of Mexico's History";
+                document.getElementById('birth-text').innerHTML = 'During the last 35 years of Mexico\'s history:<br><br>In <span id="birth-year-text">1990</span>, Mexico recorded';
+                document.getElementById('birth-subtitle').textContent = "This was the state of violence 35 years ago.";
+            } else {
+                document.getElementById('birth-heading').textContent = "The Year You Were Born";
+                document.getElementById('birth-text').innerHTML = 'In <span id="birth-year-text"></span>, Mexico recorded';
+                document.getElementById('birth-subtitle').textContent = "This was the state of violence when you entered the world.";
+            }
+
+            // SECTION 4: CUMULATIVE DEATHS
+            if (birthYear === 1990) {
+                document.getElementById('cumulative-intro').innerHTML = 'Since 1990, when modern records began, this many people have been murdered in Mexico:';
+                document.getElementById('cumulative-note').innerHTML = 'That\'s <span id="cumulative-daily"></span> people per day, every single day, for 35 years.';
+            } else if (birthYear === 2024) {
+                document.getElementById('cumulative-intro').innerHTML = 'Since you were born in 2024, this many people have been murdered in Mexico:';
+                document.getElementById('cumulative-note').innerHTML = 'That\'s <span id="cumulative-daily"></span> people per day.<br><br>In the brief moments of your life so far, violence continues at historically unprecedented levels. This is the world you\'ve inherited.';
+            }
+
+            // SECTION 5: AGE ANALYSIS
+            if (birthYear === 1990) {
+                document.getElementById('age-intro').textContent = "Violence doesn't discriminate by age, but some groups bear the heaviest burden.";
+                document.getElementById('age-question').innerHTML = 'Since 1990, this many people in your age group have been murdered:';
+                document.getElementById('age-closing').innerHTML = 'People your age have experienced this violence throughout the entire modern period.';
+            } else if (birthYear === 2024) {
+                document.getElementById('age-intro').textContent = "Violence doesn't discriminate by age, but some groups bear the heaviest burden.";
+                document.getElementById('age-question').innerHTML = 'You\'re too young to be in the statistics yet, but by your first birthday, thousands more will join these grim numbers.';
+                document.getElementById('age-closing').innerHTML = 'In 2024 alone, homicides affected your generation.';
+            }
+
+            // SECTION 6: STATE SELECTOR LABEL
+            if (birthYear === 1990) {
+                document.getElementById('state-selector-label').textContent = "Where did you experience this violence?";
+            } else {
+                document.getElementById('state-selector-label').textContent = "Where were you born?";
+            }
+
+            // SECTION 7: MAP INTRO
+            if (birthYear === 1990) {
+                document.getElementById('map-intro').textContent = "See how violence has transformed every state in Mexico over the last 35 years—a transformation you've witnessed.";
+            } else if (birthYear === 2024) {
+                document.getElementById('map-intro').textContent = "See the violence across every state in Mexico—the landscape of the country you were born into.";
+            }
+        }
+
         function setupScrollAnimations() {
+            updateConditionalText();
+            
             const sections = document.querySelectorAll('.scroll-section');
             
             const observer = new IntersectionObserver((entries) => {
@@ -421,14 +479,12 @@
                             drawBirthChart();
                         } else if (entry.target.id === 'section-drugwar') {
                             drawDrugWarChart();
-                        } else if (entry.target.id === 'section-full') {
+                        } else if (entry.target.id === 'section-cumulative') {
                             drawFullChart();
-                        } else if (entry.target.id === 'section-cumulative') {
+                        } else if (entry.target.id === 'section-full') {
                             drawCumulativeChart();
-                        } else if (entry.target.id === 'section-cumulative') {
-                        drawCumulativeChart();
                         } else if (entry.target.id === 'section-age') {
-                        drawAgeChart();
+                            drawAgeChart();
                         }
                     }
                 });
@@ -461,7 +517,9 @@
                 .append("g")
                 .attr("transform", `translate(${margin.left},${margin.top})`);
 
-            const filteredData = data.filter(d => d.year <= birthYear);
+            // For pre-1990 condition, show data up to 1990; otherwise show data up to birthYear
+            const chartBirthYear = (birthYear === 1990) ? 1990 : birthYear;
+            const filteredData = data.filter(d => d.year <= chartBirthYear);
             const { x, y } = createScales(data, width, height);
 
             // Axes
@@ -507,8 +565,15 @@
                 .duration(300)
                 .attr("r", 6);
 
-            // Update text
-            document.getElementById('birth-year-text').textContent = birthYear;
+            // Update text - birth-year-text span should already exist from updateConditionalText()
+            const birthYearSpan = document.getElementById('birth-year-text');
+            if (birthYearSpan) {
+                if (birthYear === 1990) {
+                    birthYearSpan.textContent = "1990";
+                } else {
+                    birthYearSpan.textContent = birthYear;
+                }
+            }
             document.getElementById('birth-stat').textContent = endPoint.value.toLocaleString() + ' homicides';
         }
 
@@ -554,11 +619,84 @@
                 .ease(d3.easeLinear)
                 .attr("stroke-dashoffset", 0);
 
-            // Calculate increase
-            const birthData = data.find(d => d.year === birthYear);
-            const drugWarData = data.find(d => d.year === 2011);
-            const increase = ((drugWarData.value - birthData.value) / birthData.value * 100).toFixed(0);
-            document.getElementById('drugwar-increase').textContent = increase + '% higher';
+            // Add vertical line for 2006 (Drug War officially declared)
+            const drugWarStartDate = new Date(2006, 0, 1);
+            const xPos2006 = x(drugWarStartDate);
+            
+            svg.append("line")
+                .attr("x1", xPos2006)
+                .attr("x2", xPos2006)
+                .attr("y1", 0)
+                .attr("y2", height)
+                .attr("stroke", "#e74c3c")
+                .attr("stroke-width", 2)
+                .attr("stroke-dasharray", "5,5")
+                .attr("opacity", 0)
+                .transition()
+                .delay(2000)
+                .duration(500)
+                .attr("opacity", 0.6);
+
+            // Add legend label for 2006 line
+            svg.append("text")
+                .attr("x", xPos2006 + 5)
+                .attr("y", 15)
+                .attr("font-size", "11px")
+                .attr("fill", "#e74c3c")
+                .attr("font-weight", "600")
+                .attr("opacity", 0)
+                .text("Drug War declared (2006)")
+                .transition()
+                .delay(2000)
+                .duration(500)
+                .attr("opacity", 0.8);
+
+            // For birth year 1990, show 1990 as reference year
+            let referenceYear = birthYear;
+            if (birthYear === 1990) {
+                referenceYear = 1990;
+            } else if (birthYear === 2024) {
+                // For 2024 births, don't show anything
+                return;
+            }
+            
+            // Only draw point if birth year is <= 2011 (within chart range)
+            if (referenceYear <= 2011) {
+                const referenceData = data.find(d => d.year === referenceYear);
+                
+                if (referenceData) {
+                    // Add red dot at reference year
+                    svg.append("circle")
+                        .attr("cx", x(referenceData.date))
+                        .attr("cy", y(referenceData.value))
+                        .attr("r", 0)
+                        .attr("fill", "#e74c3c")
+                        .transition()
+                        .delay(2000)
+                        .duration(300)
+                        .attr("r", 5);
+
+                    // Add label above the dot showing the reference year
+                    svg.append("text")
+                        .attr("x", x(referenceData.date))
+                        .attr("y", y(referenceData.value) - 15)
+                        .attr("text-anchor", "middle")
+                        .attr("font-size", "12px")
+                        .attr("font-weight", "600")
+                        .attr("fill", "#e74c3c")
+                        .attr("opacity", 0)
+                        .text(referenceYear)
+                        .transition()
+                        .delay(2300)
+                        .duration(300)
+                        .attr("opacity", 1);
+                    
+                    // Calculate and display increase
+                    const drugWarData = data.find(d => d.year === 2011);
+                    const increase = ((drugWarData.value - referenceData.value) / referenceData.value * 100).toFixed(0);
+                    document.getElementById('drugwar-increase').textContent = increase + '% higher';
+                }
+            }
         }
 
         function drawFullChart() {
@@ -581,8 +719,11 @@
             svg.append("g")
                 .call(d3.axisLeft(y).tickFormat(d => d.toLocaleString()));
 
-            // Area before birth year (blue)
-            const dataBefore = data.filter(d => d.year <= birthYear);
+            // Determine the year to split the chart
+            const splitYear = (birthYear === 1990) ? 1990 : birthYear;
+
+            // Area before split year (blue)
+            const dataBefore = data.filter(d => d.year <= splitYear);
             const areaBeforeBirth = d3.area()
                 .x(d => x(d.date))
                 .y0(height)
@@ -595,8 +736,8 @@
                 .attr("opacity", 0.3)
                 .attr("d", areaBeforeBirth);
 
-            // Area after birth year (red)
-            const dataAfter = data.filter(d => d.year >= birthYear);
+            // Area after split year (red)
+            const dataAfter = data.filter(d => d.year >= splitYear);
             const areaAfterBirth = d3.area()
                 .x(d => x(d.date))
                 .y0(height)
@@ -606,7 +747,7 @@
             svg.append("path")
                 .datum(dataAfter)
                 .attr("fill", "#e74c3c")
-                .attr("opacity", 0.3)
+                .attr("opacity", 0.5)
                 .attr("d", areaAfterBirth);
 
             // Full line
@@ -630,16 +771,93 @@
                 .duration(3000)
                 .ease(d3.easeLinear)
                 .attr("stroke-dashoffset", 0);
+
+            // Add vertical line for 2006 (Drug War officially declared)
+            const drugWarStartDate = new Date(2006, 0, 1);
+            const xPos2006 = x(drugWarStartDate);
+            
+            svg.append("line")
+                .attr("x1", xPos2006)
+                .attr("x2", xPos2006)
+                .attr("y1", 0)
+                .attr("y2", height)
+                .attr("stroke", "#e74c3c")
+                .attr("stroke-width", 2)
+                .attr("stroke-dasharray", "5,5")
+                .attr("opacity", 0)
+                .transition()
+                .delay(3000)
+                .duration(500)
+                .attr("opacity", 0.6);
+
+            // Add legend label for 2006 line
+            svg.append("text")
+                .attr("x", xPos2006 + 5)
+                .attr("y", 15)
+                .attr("font-size", "11px")
+                .attr("fill", "#e74c3c")
+                .attr("font-weight", "600")
+                .attr("opacity", 0)
+                .text("Drug War declared (2006)")
+                .transition()
+                .delay(3000)
+                .duration(500)
+                .attr("opacity", 0.8);
+
+            // Add red dot at birth year (for user orientation)
+            let referenceYear = birthYear;
+            if (birthYear === 1990) {
+                referenceYear = 1990;
+            } else if (birthYear === 2024) {
+                referenceYear = 2024;
+            }
+            
+            const referenceData = data.find(d => d.year === referenceYear);
+            if (referenceData) {
+                svg.append("circle")
+                    .attr("cx", x(referenceData.date))
+                    .attr("cy", y(referenceData.value))
+                    .attr("r", 0)
+                    .attr("fill", "#e74c3c")
+                    .transition()
+                    .delay(3000)
+                    .duration(300)
+                    .attr("r", 5);
+
+                // Add label above the dot showing the reference year
+                svg.append("text")
+                    .attr("x", x(referenceData.date))
+                    .attr("y", y(referenceData.value) - 15)
+                    .attr("text-anchor", "middle")
+                    .attr("font-size", "12px")
+                    .attr("font-weight", "600")
+                    .attr("fill", "#e74c3c")
+                    .attr("opacity", 0)
+                    .text(referenceYear)
+                    .transition()
+                    .delay(3300)
+                    .duration(300)
+                    .attr("opacity", 1);
+            }
         }
 
         function drawCumulativeChart() {
-            // Calculate cumulative total
-            const dataAfterBirth = data.filter(d => d.year >= birthYear);
+            // Calculate cumulative total based on birth year condition
+            let startYear = birthYear;
+            if (birthYear === 1990) {
+                startYear = 1990;
+            }
+            
+            const dataAfterBirth = data.filter(d => d.year >= startYear);
             const cumulativeTotal = dataAfterBirth.reduce((sum, d) => sum + d.value, 0);
-            const years = 2024 - birthYear + 1;
+            const years = 2024 - startYear + 1;
             const dailyAverage = Math.round(cumulativeTotal / (years * 365));
 
-            document.getElementById('cumulative-year').textContent = birthYear;
+            if (birthYear === 1990) {
+                document.getElementById('cumulative-year').textContent = "1990";
+            } else {
+                document.getElementById('cumulative-year').textContent = birthYear;
+            }
             document.getElementById('cumulative-total').textContent = cumulativeTotal.toLocaleString();
             document.getElementById('cumulative-daily').textContent = dailyAverage.toLocaleString();
 
@@ -709,7 +927,6 @@
             if (currentAge >= 75 && currentAge <= 79) return "75-79 anos";
             if (currentAge >= 80 && currentAge <= 84) return "80-84 anos";
             if (currentAge >= 85) return "85 anos y mas";
-
         }
 
         function calculateAgeGroupDeaths(birthYear) {
@@ -734,8 +951,16 @@
         }
 
         function drawAgeChart() {
+            // For pre-1990, use a reference year logic
+            let refYear = birthYear;
+            if (birthYear === 1990) {
+                // They're roughly 35 years old, so born around 1990
+                // Use 35-39 age group as proxy
+                refYear = 1990;
+            }
+
             // Get the data
-            const result = calculateAgeGroupDeaths(birthYear);
+            const result = calculateAgeGroupDeaths(refYear);
             const total = result.total;
             
             // How many people each silhouette represents
@@ -785,7 +1010,7 @@
                 .attr("opacity", 0)
                 .transition()
                 .duration(30)
-                .delay(d => d.index * 10) // Stagger animation
+                .delay(d => d.index * 10)
                 .attr("opacity", 0.7);
             
             // Add legend
@@ -799,10 +1024,24 @@
                 .text("* Each sillhouette represents " + PEOPLE_PER_ICON.toLocaleString() + " people");
             
             // Update text elements
-            const currentAge = 2024 - birthYear;
-            document.getElementById('age-birth-year').textContent = birthYear;
+            if (birthYear === 1990) {
+                document.getElementById('age-birth-year').textContent = "1990";
+                document.getElementById('age-range-text').textContent = "35+";
+            } else if (birthYear === 2024) {
+                document.getElementById('age-birth-year').textContent = "2024";
+                document.getElementById('age-range-text').textContent = "0";
+            } else {
+                const currentAge = 2024 - birthYear;
+                const ageGroup = getCurrentAgeGroup(birthYear);
+                
+                // Extract the age range from the ageGroup string (e.g., "25-29 anos" -> "25-29")
+                const ageRangeMatch = ageGroup.match(/(\d+-\d+)/);
+                const ageRange = ageRangeMatch ? ageRangeMatch[1] : currentAge;
+                
+                document.getElementById('age-birth-year').textContent = birthYear;
+                document.getElementById('age-range-text').textContent = ageRange;
+            }
             document.getElementById('age-total').textContent = result.total.toLocaleString();
-            document.getElementById('age-range-text').textContent = `${currentAge - 4}-${currentAge}`;
         }
 
         let stateData = [];
@@ -874,20 +1113,6 @@
             const dropdown = document.getElementById("state-select");
 
             renderStateOptions(states);
-
-            // Wire up search filter
-            const searchInput = document.getElementById('state-search');
-            if (searchInput) {
-                searchInput.addEventListener('input', function() {
-                    const q = this.value.trim().toLowerCase();
-                    if (!q) {
-                        renderStateOptions(stateOptions);
-                        return;
-                    }
-                    const filtered = stateOptions.filter(s => s.toLowerCase().includes(q));
-                    renderStateOptions(filtered);
-                });
-            }
 
             console.log(`Populated dropdown with ${states.length} states`);
         }

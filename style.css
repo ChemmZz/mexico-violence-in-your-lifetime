@@ -47,6 +47,24 @@ body {
     border-radius: 4px;
     width: 200px;
 }
+#state-select {
+    padding: 12px 16px;
+    font-size: 1.1rem;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    width: 250px;
+}
+#section-state .content-container {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.state-selector-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
 .continue-btn {
     margin-top: 20px;
     padding: 12px 30px;
