@@ -10,7 +10,30 @@
     <link href="style.css" rel="stylesheet" />
 </head>
 <body>
-    <div class="intro-section">
+    <!-- Navigation Menu Toggle Button -->
+    <button class="nav-menu-toggle" onclick="toggleNavMenu()" aria-label="Open navigation menu">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+    </button>
+
+    <!-- Navigation Menu Overlay -->
+    <div class="nav-menu-overlay" onclick="toggleNavMenu()"></div>
+
+    <!-- Navigation Menu -->
+    <nav class="nav-menu">
+        <h3>Jump to Section</h3>
+        <button class="nav-menu-item" onclick="navigateTo('intro-section')">
+            <span>🏠</span> Start
+        </button>
+        <button class="nav-menu-item" onclick="navigateTo('section-map')">
+            <span>🗺️</span> Map
+        </button>
+    </nav>
+
+        <div class="intro-section">
         <h1>How Much More Violent is Mexico Since You Were Born?</h1>
         <p>Mexico has experienced sustained violence for years, and people have started to normalize this, 
         desensitized to the daily headlines about another homicide. This is not normal, and I want to 
@@ -78,6 +101,12 @@
                 </div>
             </div>
         </div>
+        <div class="scroll-indicator" onclick="document.getElementById('section-drugwar').scrollIntoView({behavior: 'smooth'})">
+            <span>Scroll to continue</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+            </svg>
+        </div>
     </div>
 
     <!-- Section 2: Drug War -->
@@ -99,6 +128,12 @@
                 </div>
             </div>
         </div>
+        <div class="scroll-indicator" onclick="document.getElementById('section-full').scrollIntoView({behavior: 'smooth'})">
+            <span>Scroll to continue</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+            </svg>
+        </div>
     </div>
 
     <!-- Section 3: Full Picture -->
@@ -112,11 +147,17 @@
             <div class="text-side">
                 <div class="text-content">
                     <h2>The Full Story</h2>
-                    <p id="full-intro">After a brief decline, violence surged again. 2020 became the deadliest year in modern Mexican history with:</p>
+                    <p id="full-intro">After a brief decline, violence surged again. 2020 became the deadliest year in modern Mexican history with</p>
                     <div class="stat">36,773 homicides</div>
                     <p id="full-middle">Today, violence remains at historically high levels. The crisis continues to devastate communities across Mexico.</p>
                 </div>
             </div>
+        </div>
+        <div class="scroll-indicator" onclick="document.getElementById('section-cumulative').scrollIntoView({behavior: 'smooth'})">
+            <span>Scroll to continue</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+            </svg>
         </div>
     </div>
 
@@ -143,6 +184,12 @@
                 </div>
             </div>
         </div>
+        <div class="scroll-indicator" onclick="document.getElementById('section-age').scrollIntoView({behavior: 'smooth'})">
+            <span>Scroll to continue</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+            </svg>
+        </div>
     </div>
 
     <!-- Section 5: Age Analysis -->
@@ -163,6 +210,12 @@
                 </div>
             </div>
         </div>
+        <div class="scroll-indicator" onclick="document.getElementById('section-state').scrollIntoView({behavior: 'smooth'})">
+            <span>Scroll to continue</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+            </svg>
+        </div>
     </div>
 
     <!-- Section 6: Your State -->
@@ -178,7 +231,6 @@
                             <button id="skip-state-btn" class="continue-btn" style="margin-left: 10px; display: block;">Skip</button>
                 </div>
             </div>
-            
         </div>
     </div>
             
@@ -304,6 +356,8 @@
 
     <script src="https://d3js.org/d3.v6.js"></script>
     <script>
+        history.scrollRestoration = 'manual';
+
         const homicideData = [
             {"Year":1990,"Total":14493.0},
             {"Year":1991,"Total":15128.0},
@@ -372,6 +426,34 @@
 
             console.log("Age data loaded successfully!");
         });
+
+        // Navigation Menu Functions
+        function toggleNavMenu() {
+            document.querySelector('.nav-menu').classList.toggle('open');
+            document.querySelector('.nav-menu-overlay').classList.toggle('open');
+        }
+
+        function navigateTo(sectionId) {
+            // Close the menu
+            toggleNavMenu();
+    
+            // Handle intro section (it's a class, not an id)
+            if (sectionId === 'intro-section') {
+                document.querySelector('.intro-section').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+                
+                // Make section visible
+                document.getElementById(sectionId).classList.add('visible');
+                
+                // If navigating to map, initialize it
+                if (sectionId === 'section-map') {
+                    setTimeout(() => {
+                        initializeMap();
+                    }, 1000);
+                }
+            }
+        }
 
         // Setup
         document.getElementById('year-select').addEventListener('change', function() {
@@ -488,7 +570,7 @@
                         }
                     }
                 });
-            }, { threshold: 0.5 });
+            }, { threshold: 0.3 });
 
             sections.forEach(section => observer.observe(section));
         }
@@ -507,6 +589,7 @@
         }
 
         function drawBirthChart() {
+            d3.select("#chart-birth").selectAll("*").remove();
             const margin = { top: 20, right: 30, bottom: 40, left: 60 };
             const width = 500 - margin.left - margin.right;
             const height = 400 - margin.top - margin.bottom;
@@ -549,7 +632,7 @@
                 .attr("stroke-dasharray", totalLength + " " + totalLength)
                 .attr("stroke-dashoffset", totalLength)
                 .transition()
-                .duration(2000)
+                .duration(1500)
                 .ease(d3.easeLinear)
                 .attr("stroke-dashoffset", 0);
 
@@ -578,6 +661,7 @@
         }
 
         function drawDrugWarChart() {
+            d3.select("#chart-drugwar").selectAll("*").remove();
             const margin = { top: 20, right: 30, bottom: 40, left: 60 };
             const width = 500 - margin.left - margin.right;
             const height = 400 - margin.top - margin.bottom;
@@ -700,6 +784,25 @@
         }
 
         function drawFullChart() {
+            let startYear = birthYear;
+            if (birthYear === 1990) {
+                startYear = 1990;
+            }
+            const dataAfterBirth = data.filter(d => d.year >= startYear);
+            const cumulativeTotal = dataAfterBirth.reduce((sum, d) => sum + d.value, 0);
+            const years = 2024 - startYear + 1;
+            const dailyAverage = Math.round(cumulativeTotal / (years * 365));
+
+            if (birthYear === 1990) {
+                document.getElementById('cumulative-year').textContent = "1990";
+            } else {
+                document.getElementById('cumulative-year').textContent = birthYear;
+            }
+            document.getElementById('cumulative-total').textContent = cumulativeTotal.toLocaleString();
+            document.getElementById('cumulative-daily').textContent = dailyAverage.toLocaleString();
+
+            d3.select("#chart-full").selectAll("*").remove();
+
             const margin = { top: 20, right: 30, bottom: 40, left: 60 };
             const width = 500 - margin.left - margin.right;
             const height = 400 - margin.top - margin.bottom;
@@ -853,15 +956,8 @@
             const years = 2024 - startYear + 1;
             const dailyAverage = Math.round(cumulativeTotal / (years * 365));
 
-            if (birthYear === 1990) {
-                document.getElementById('cumulative-year').textContent = "1990";
-            } else {
-                document.getElementById('cumulative-year').textContent = birthYear;
-            }
-            document.getElementById('cumulative-total').textContent = cumulativeTotal.toLocaleString();
-            document.getElementById('cumulative-daily').textContent = dailyAverage.toLocaleString();
-
-            // Draw cumulative bar chart
+            // Draw cumulative bar chart - NOW SHOWING ALL YEARS
+            d3.select("#chart-cumulative").selectAll("*").remove();
             const margin = { top: 20, right: 30, bottom: 60, left: 60 };
             const width = 500 - margin.left - margin.right;
             const height = 400 - margin.top - margin.bottom;
@@ -872,25 +968,27 @@
                 .append("g")
                 .attr("transform", `translate(${margin.left},${margin.top})`);
 
+            // Use ALL data, not just dataAfterBirth
             const x = d3.scaleBand()
-                .domain(dataAfterBirth.map(d => d.year))
+                .domain(data.map(d => d.year))
                 .range([0, width])
                 .padding(0.1);
 
             const y = d3.scaleLinear()
-                .domain([0, d3.max(dataAfterBirth, d => d.value)])
+                .domain([0, d3.max(data, d => d.value)])
                 .nice()
                 .range([height, 0]);
 
             svg.append("g")
                 .attr("transform", `translate(0,${height})`)
-                .call(d3.axisBottom(x).tickValues(x.domain().filter((d, i) => i % 3 === 0)));
+                .call(d3.axisBottom(x).tickValues(x.domain().filter((d, i) => i % 5 === 0)));
 
             svg.append("g")
                 .call(d3.axisLeft(y).tickFormat(d => d.toLocaleString()));
 
+            // Draw bars with color based on birth year
             svg.selectAll(".bar")
-                .data(dataAfterBirth)
+                .data(data)
                 .enter()
                 .append("rect")
                 .attr("class", "bar")
@@ -898,12 +996,36 @@
                 .attr("y", height)
                 .attr("width", x.bandwidth())
                 .attr("height", 0)
-                .attr("fill", "#e74c3c")
+                .attr("fill", d => {
+                    if (d.year === birthYear) return "#2c3e50";  // Dark color for birth year
+                    if (birthYear === 1990) return "#e74c3c";    // All red if born 1990 or before
+                    if (d.year >= birthYear) return "#e74c3c";   // Red for years after birth
+                    return "#bdc3c7";                             // Gray for years before birth
+                })
                 .transition()
                 .duration(1500)
-                .delay((d, i) => i * 50)
+                .delay((d, i) => i * 30)
                 .attr("y", d => y(d.value))
                 .attr("height", d => height - y(d.value));
+
+            // Add a label for birth year bar
+            // Add a label for birth year bar (only if birth year is in the data range)
+            const birthYearData = data.find(d => d.year === birthYear);
+            if (birthYearData) {
+                svg.append("text")
+                    .attr("x", x(birthYear) + x.bandwidth() / 2)
+                    .attr("y", y(birthYearData.value) - 8)
+                    .attr("text-anchor", "middle")
+                    .attr("font-size", "11px")
+                    .attr("font-weight", "600")
+                    .attr("fill", "#2c3e50")
+                    .attr("opacity", 0)
+                    .text(birthYear === 1990 ? "1990" : "You")
+                    .transition()
+                    .delay(1800)
+                    .duration(300)
+                    .attr("opacity", 1);
+            }
         }
 
         function getCurrentAgeGroup(birthYear) {
@@ -1144,6 +1266,20 @@
             
             // Store selected state globally
             userState = selectedState;
+            
+            // Scroll to map section
+            document.getElementById('section-map').scrollIntoView({ behavior: 'smooth' });
+            
+            // Initialize map after scroll animation
+            setTimeout(() => {
+                initializeMap();
+            }, 1000);
+        });
+
+        // Skip button - go directly to map without selecting a state
+        document.getElementById('skip-state-btn').addEventListener('click', function() {
+            // Don't set userState, just go to map
+            userState = null;
             
             // Scroll to map section
             document.getElementById('section-map').scrollIntoView({ behavior: 'smooth' });
@@ -1500,7 +1636,7 @@
             const container = document.getElementById('municipalities-chart-container');
             const containerWidth = container.offsetWidth || 700;
             
-            const margin = { top: 20, right: 30, bottom: 20, left: 180 };
+            const margin = { top: 20, right: 80, bottom: 20, left: 220 };
             const width = containerWidth - margin.left - margin.right;
             const height = 250 - margin.top - margin.bottom;
             
