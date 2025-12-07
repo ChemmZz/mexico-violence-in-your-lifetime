@@ -204,6 +204,30 @@
                 <div class="text-content">
                     <h2>People Like You</h2>
                     <p id="age-intro">Violence doesn't discriminate by age, but some groups bear the heaviest burden.</p>
+
+                    <!-- Age range selector - only shown for 1990 -->
+                    <!-- Section code by Claude after prompt "I was thinking on maybe for those users have an option so 
+                     they can select their age range (from 35 onwards, not all dataset) and then compute the 
+                     cumulative from 1990 of that age range"-->
+                    <div id="age-selector-container" class="selector-box" style="display: none;">
+                        <label for="age-range-select">What's your age range?</label>
+                        <select id="age-range-select">
+                            <option value="" selected disabled>Select age range</option>
+                            <option value="35-39 anos">35-39</option>
+                            <option value="40-44 anos">40-44</option>
+                            <option value="45-49 anos">45-49</option>
+                            <option value="50-54 anos">50-54</option>
+                            <option value="55-59 anos">55-59</option>
+                            <option value="60-64 anos">60-64</option>
+                            <option value="65-69 anos">65-69</option>
+                            <option value="70-74 anos">70-74</option>
+                            <option value="75-79 anos">75-79</option>
+                            <option value="80-84 anos">80-84</option>
+                            <option value="85 anos y mas">85+</option>
+                        </select>
+                    </div>
+                    <!-- End of age range selector code -->
+
                     <p id="age-question">Since you were born in <span id="age-birth-year"></span>, this many people in your age group have been murdered:</p>
                     <div class="cumulative-stat" id="age-total"></div>
                     <p id="age-closing" class="cumulative-note">That's people who were <span id="age-range-text"></span> years old when they died.</p>
@@ -498,6 +522,12 @@
             }
         });
 
+        document.getElementById('age-range-select').addEventListener('change', function() {
+            if (birthYear === 1990 && this.value) {
+                drawAgeChart();
+            }
+        });
+
         // Helper function to update conditional text
         function updateConditionalText() {
             // SECTION 1: BIRTH YEAR
@@ -513,22 +543,22 @@
 
             // SECTION 4: CUMULATIVE DEATHS
             if (birthYear === 1990) {
-                document.getElementById('cumulative-intro').innerHTML = 'Since 1990, when modern records began, this many people have been murdered in Mexico:';
+                document.getElementById('cumulative-intro').innerHTML = 'Since <span id="cumulative-year"></span>, when modern records began, this many people have been murdered in Mexico:';
                 document.getElementById('cumulative-note').innerHTML = 'That\'s <span id="cumulative-daily"></span> people per day, every single day, for 35 years.';
             } else if (birthYear === 2024) {
-                document.getElementById('cumulative-intro').innerHTML = 'Since you were born in 2024, this many people have been murdered in Mexico:';
+                document.getElementById('cumulative-intro').innerHTML = 'Since you were born in <span id="cumulative-year"></span>, this many people have been murdered in Mexico:';
                 document.getElementById('cumulative-note').innerHTML = 'That\'s <span id="cumulative-daily"></span> people per day.<br><br>In the brief moments of your life so far, violence continues at historically unprecedented levels. This is the world you\'ve inherited.';
             }
 
             // SECTION 5: AGE ANALYSIS
             if (birthYear === 1990) {
                 document.getElementById('age-intro').textContent = "Violence doesn't discriminate by age, but some groups bear the heaviest burden.";
-                document.getElementById('age-question').innerHTML = 'Since 1990, this many people in your age group have been murdered:';
-                document.getElementById('age-closing').innerHTML = 'People your age have experienced this violence throughout the entire modern period.';
+                document.getElementById('age-question').innerHTML = 'Since <span id="age-birth-year"></span>, this many people in your age group have been murdered:';
+                document.getElementById('age-closing').innerHTML = 'That\'s people who were <span id="age-range-text"></span> years old when they died.';
             } else if (birthYear === 2024) {
                 document.getElementById('age-intro').textContent = "Violence doesn't discriminate by age, but some groups bear the heaviest burden.";
-                document.getElementById('age-question').innerHTML = 'You\'re too young to be in the statistics yet, but by your first birthday, thousands more will join these grim numbers.';
-                document.getElementById('age-closing').innerHTML = 'In 2024 alone, homicides affected your generation.';
+                document.getElementById('age-question').innerHTML = 'Since you were born in <span id="age-birth-year"></span>, this many people in your age group have been murdered:';
+                document.getElementById('age-closing').innerHTML = 'That\'s people who were between 0 and 4 years old when they died.';
             }
 
             // SECTION 6: STATE SELECTOR LABEL
@@ -997,6 +1027,7 @@
                 .attr("width", x.bandwidth())
                 .attr("height", 0)
                 .attr("fill", d => {
+                    if (d.year === 2020) return "#8B0000"; 
                     if (d.year === birthYear) return "#2c3e50";  // Dark color for birth year
                     if (birthYear === 1990) return "#e74c3c";    // All red if born 1990 or before
                     if (d.year >= birthYear) return "#e74c3c";   // Red for years after birth
@@ -1026,6 +1057,23 @@
                     .duration(300)
                     .attr("opacity", 1);
             }
+
+            const year2020Data = data.find(d => d.year === 2020);
+                if (year2020Data) {
+                    svg.append("text")
+                        .attr("x", x(2020) + x.bandwidth() / 2)
+                        .attr("y", y(year2020Data.value) - 8)
+                        .attr("text-anchor", "middle")
+                        .attr("font-size", "11px")
+                        .attr("font-weight", "600")
+                        .attr("fill", "#8B0000")
+                        .attr("opacity", 0)
+                        .text("Deadliest (2020)")
+                        .transition()
+                        .delay(1800)
+                        .duration(300)
+                        .attr("opacity", 1);
+                }
         }
 
         function getCurrentAgeGroup(birthYear) {
@@ -1073,23 +1121,68 @@
         }
 
         function drawAgeChart() {
-            // For pre-1990, use a reference year logic
-            let refYear = birthYear;
-            if (birthYear === 1990) {
-                // They're roughly 35 years old, so born around 1990
-                // Use 35-39 age group as proxy
-                refYear = 1990;
+        // For 1990, show selector and wait for user input
+        // Funciton created by Claude when asked about modifyng chart with age group selector
+        if (birthYear === 1990) {
+            document.getElementById('age-selector-container').style.display = 'block';
+            document.getElementById('age-birth-year').textContent = "1990";
+            
+            // Check if user already selected an age range
+            const selectedAgeRange = document.getElementById('age-range-select').value;
+            if (!selectedAgeRange) {
+                // Show placeholder until they select
+                document.getElementById('age-total').textContent = "—";
+                document.getElementById('age-range-text').textContent = "...";
+                d3.select("#chart-age").selectAll("*").remove();
+                return;
             }
+            
+            // Use the selected age range
+            drawAgeChartWithGroup(selectedAgeRange, 1990);
+        } else {
+            // Hide selector for other years
+            document.getElementById('age-selector-container').style.display = 'none';
+            
+            if (birthYear === 2024) {
+                document.getElementById('age-birth-year').textContent = "2024";
+                drawAgeChartWithGroup("0-4 anos", 2024);
+            } else {
+                const ageGroup = getCurrentAgeGroup(birthYear);
+                document.getElementById('age-birth-year').textContent = birthYear;
+                drawAgeChartWithGroup(ageGroup, birthYear);
+            }
+        }
+    }
 
-            // Get the data
-            const result = calculateAgeGroupDeaths(refYear);
-            const total = result.total;
+        function drawAgeChartWithGroup(ageGroup, startYear) {
+            // Funciton created by Claude when asked about modifyng chart with age group selector
+            // Filter data from startYear onwards
+            const relevantData = ageData.filter(d => d.year >= startYear);
+            
+            // Sum up deaths in that age group
+            const total = relevantData.reduce((sum, d) => sum + (d[ageGroup] || 0), 0);
+            
+            // Extract age range for display (e.g., "35-39 anos" -> "35-39", "85 anos y mas" -> "85+")
+            let ageRangeDisplay;
+            if (ageGroup === "85 anos y mas") {
+                ageRangeDisplay = "85+";
+            } else {
+                const ageRangeMatch = ageGroup.match(/(\d+-\d+)/);
+                ageRangeDisplay = ageRangeMatch ? ageRangeMatch[1] : ageGroup;
+            }
+            
+            // Update text elements
+            document.getElementById('age-total').textContent = total.toLocaleString();
+            document.getElementById('age-range-text').textContent = ageRangeDisplay;
             
             // How many people each silhouette represents
             const PEOPLE_PER_ICON = 500;
-            const numIcons = Math.ceil(total / PEOPLE_PER_ICON);
+            const fullIcons = Math.floor(total / PEOPLE_PER_ICON);
+            const remainder = total % PEOPLE_PER_ICON;
+            const partialOpacity = remainder / PEOPLE_PER_ICON; // Percentage for partial icon
+            const totalIcons = remainder > 0 ? fullIcons + 1 : fullIcons;
             
-            console.log(`Creating ${numIcons} silhouettes (${PEOPLE_PER_ICON} people each)`);
+            console.log(`Creating ${fullIcons} full silhouettes + ${remainder > 0 ? '1 partial' : 'no partial'} (${PEOPLE_PER_ICON} people each)`);
             
             // Clear any existing content
             d3.select("#chart-age").selectAll("*").remove();
@@ -1101,7 +1194,7 @@
             const iconSpacing = 5;
             
             const iconsPerRow = Math.floor(containerWidth / (iconSize + iconSpacing));
-            const numRows = Math.ceil(numIcons / iconsPerRow);
+            const numRows = Math.ceil(totalIcons / iconsPerRow);
             
             const svg = d3.select("#chart-age")
                 .attr("width", containerWidth)
@@ -1110,13 +1203,15 @@
             
             // Create silhouette data array
             const silhouettes = [];
-            for (let i = 0; i < numIcons; i++) {
+            for (let i = 0; i < totalIcons; i++) {
                 const row = Math.floor(i / iconsPerRow);
                 const col = i % iconsPerRow;
                 silhouettes.push({
                     x: col * (iconSize + iconSpacing) + iconSize / 2,
                     y: row * (iconSize + iconSpacing) + iconSize / 2,
-                    index: i
+                    index: i,
+                    isPartial: i === totalIcons - 1 && remainder > 0,
+                    finalOpacity: i === totalIcons - 1 && remainder > 0 ? partialOpacity * 0.7 : 0.7
                 });
             }
             
@@ -1133,7 +1228,7 @@
                 .transition()
                 .duration(30)
                 .delay(d => d.index * 10)
-                .attr("opacity", 0.7);
+                .attr("opacity", d => d.finalOpacity);
             
             // Add legend
             svg.append("text")
@@ -1142,28 +1237,8 @@
                 .attr("text-anchor", "middle")
                 .attr("font-size", "11px")
                 .attr("fill", "#666")
-                .style("font-family", "italic")
-                .text("* Each sillhouette represents " + PEOPLE_PER_ICON.toLocaleString() + " people");
-            
-            // Update text elements
-            if (birthYear === 1990) {
-                document.getElementById('age-birth-year').textContent = "1990";
-                document.getElementById('age-range-text').textContent = "35+";
-            } else if (birthYear === 2024) {
-                document.getElementById('age-birth-year').textContent = "2024";
-                document.getElementById('age-range-text').textContent = "0";
-            } else {
-                const currentAge = 2024 - birthYear;
-                const ageGroup = getCurrentAgeGroup(birthYear);
-                
-                // Extract the age range from the ageGroup string (e.g., "25-29 anos" -> "25-29")
-                const ageRangeMatch = ageGroup.match(/(\d+-\d+)/);
-                const ageRange = ageRangeMatch ? ageRangeMatch[1] : currentAge;
-                
-                document.getElementById('age-birth-year').textContent = birthYear;
-                document.getElementById('age-range-text').textContent = ageRange;
-            }
-            document.getElementById('age-total').textContent = result.total.toLocaleString();
+                .style("font-style", "italic")
+                .text("* Each silhouette represents " + PEOPLE_PER_ICON.toLocaleString() + " people");
         }
 
         let stateData = [];
