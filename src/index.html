@@ -15,6 +15,14 @@
   </head>
 
   <body>
+   <!-- Language Toggle -->
+    <div class="language-toggle">
+        <span id="lang-es" class="active" onclick="setLanguage('es')">ES</span>
+        <span class="separator">|</span>
+        <span id="lang-en" onclick="setLanguage('en')">EN</span>
+    </div>
+
+
     <!-- Navigation Menu Toggle Button -->
     <button
       class="nav-menu-toggle"
@@ -54,12 +62,13 @@
     </nav>
 
     <div class="intro-section">
-      <h1>How Much More Violent is Mexico Since You Were Born?</h1>
-      <p>
-        Mexico has experienced sustained violence for years, and people have
-        started to normalize this, desensitized to the daily headlines about
-        another homicide. This is not normal, and I want to show and remind
-        people that ONE homicide is too much.
+      <h1 data-i18n="intro.title">¿Cuánto Más Violento es México Desde que Naciste?</h1>
+      <p data-i18n="intro.text">
+        Mexico ha experimentado violencia constante y sostenida durante años, 
+        temo que esta violencia se haya normalizado, que la gente se haya 
+        desensibilizado a los titulares diarios sobre otro homicidio. 
+        Esto no es normal, y quiero mostrar y recordar a la gente que 
+        UN homicidio es demasiado.
       </p>
 
       <div class="selector-box">
@@ -679,46 +688,111 @@
     <div style="height: 100vh"></div>
 
     <script src="https://d3js.org/d3.v6.js"></script>
+    <script src="translations.js"></script>
     <script>
-      history.scrollRestoration = "manual";
+    document.addEventListener('DOMContentLoaded', initializeLanguage);
+    </script>
+    <script>
+        const translations = {
+            en: {
+                "intro.title": "How Much More Violent is Mexico Since You Were Born?",
+                "intro.text": "Mexico has experienced sustained violence for years, and people have started to normalize this, desensitized to the daily headlines about another homicide. This is not normal, and I want to show and remind people that ONE homicide is too much."
+            },
+            es: {
+                "intro.title": "¿Cuánto Más Violento es México Desde que Naciste?",
+                "intro.text": "México ha experimentado violencia constante y sostenida durante años, y la gente ha empezado a normalizarla, desensibilizada a los titulares diarios sobre otro homicidio. Esto no es normal, y quiero mostrar y recordar a la gente que UN homicidio es demasiado."
+            }
+            };
 
-      const homicideData = [
-        { Year: 1990, Total: 14493.0 },
-        { Year: 1991, Total: 15128.0 },
-        { Year: 1992, Total: 16594.0 },
-        { Year: 1993, Total: 16040.0 },
-        { Year: 1994, Total: 15839.0 },
-        { Year: 1995, Total: 15612.0 },
-        { Year: 1996, Total: 14505.0 },
-        { Year: 1997, Total: 13552.0 },
-        { Year: 1998, Total: 13656.0 },
-        { Year: 1999, Total: 12249.0 },
-        { Year: 2000, Total: 10737.0 },
-        { Year: 2001, Total: 10285.0 },
-        { Year: 2002, Total: 10088.0 },
-        { Year: 2003, Total: 10087.0 },
-        { Year: 2004, Total: 9329.0 },
-        { Year: 2005, Total: 9921.0 },
-        { Year: 2006, Total: 10452.0 },
-        { Year: 2007, Total: 8867.0 },
-        { Year: 2008, Total: 14006.0 },
-        { Year: 2009, Total: 19803.0 },
-        { Year: 2010, Total: 25757.0 },
-        { Year: 2011, Total: 27213.0 },
-        { Year: 2012, Total: 25967.0 },
-        { Year: 2013, Total: 23063.0 },
-        { Year: 2014, Total: 20010.0 },
-        { Year: 2015, Total: 20762.0 },
-        { Year: 2016, Total: 24559.0 },
-        { Year: 2017, Total: 32079.0 },
-        { Year: 2018, Total: 36685.0 },
-        { Year: 2019, Total: 36661.0 },
-        { Year: 2020, Total: 36773.0 },
-        { Year: 2021, Total: 35700.0 },
-        { Year: 2022, Total: 33287.0 },
-        { Year: 2023, Total: 32252.0 },
-        { Year: 2024, Total: 33550.0 },
-      ];
+        let currentLanguage = 'es';
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            
+            // Update toggle buttons
+            document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+            document.getElementById('lang-es').classList.toggle('active', lang === 'es');
+            
+            // Update page title
+            document.title = translations[lang]['intro.title'];
+            
+            // Update all static elements with data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                el.textContent = translations[lang][key];
+                }
+            });
+            
+            // Update select options
+            updateSelectOptions();
+            
+            // Store preference
+            localStorage.setItem('preferredLanguage', lang);
+            
+            // RE-RUN DYNAMIC CONTENT IF USER HAS ALREADY STARTED
+            if (typeof birthYear !== 'undefined' && birthYear !== null) {
+                updateConditionalText();
+                
+                // Redraw visible charts to update labels
+                if (document.getElementById('section-birth').classList.contains('visible')) {
+                drawBirthChart();
+                }
+                if (document.getElementById('section-drugwar').classList.contains('visible')) {
+                drawDrugWarChart();
+                }
+                if (document.getElementById('section-full').classList.contains('visible')) {
+                drawCumulativeChart();
+                }
+                if (document.getElementById('section-cumulative').classList.contains('visible')) {
+                drawFullChart();
+                }
+                if (document.getElementById('section-age').classList.contains('visible')) {
+                drawAgeChart();
+                }
+            }
+            }
+
+
+        history.scrollRestoration = "manual";
+
+        const homicideData = [
+            { Year: 1990, Total: 14493.0 },
+            { Year: 1991, Total: 15128.0 },
+            { Year: 1992, Total: 16594.0 },
+            { Year: 1993, Total: 16040.0 },
+            { Year: 1994, Total: 15839.0 },
+            { Year: 1995, Total: 15612.0 },
+            { Year: 1996, Total: 14505.0 },
+            { Year: 1997, Total: 13552.0 },
+            { Year: 1998, Total: 13656.0 },
+            { Year: 1999, Total: 12249.0 },
+            { Year: 2000, Total: 10737.0 },
+            { Year: 2001, Total: 10285.0 },
+            { Year: 2002, Total: 10088.0 },
+            { Year: 2003, Total: 10087.0 },
+            { Year: 2004, Total: 9329.0 },
+            { Year: 2005, Total: 9921.0 },
+            { Year: 2006, Total: 10452.0 },
+            { Year: 2007, Total: 8867.0 },
+            { Year: 2008, Total: 14006.0 },
+            { Year: 2009, Total: 19803.0 },
+            { Year: 2010, Total: 25757.0 },
+            { Year: 2011, Total: 27213.0 },
+            { Year: 2012, Total: 25967.0 },
+            { Year: 2013, Total: 23063.0 },
+            { Year: 2014, Total: 20010.0 },
+            { Year: 2015, Total: 20762.0 },
+            { Year: 2016, Total: 24559.0 },
+            { Year: 2017, Total: 32079.0 },
+            { Year: 2018, Total: 36685.0 },
+            { Year: 2019, Total: 36661.0 },
+            { Year: 2020, Total: 36773.0 },
+            { Year: 2021, Total: 35700.0 },
+            { Year: 2022, Total: 33287.0 },
+            { Year: 2023, Total: 32252.0 },
+            { Year: 2024, Total: 33550.0 },
+        ];
 
       const data = homicideData.map((d) => ({
         year: d.Year,
@@ -1043,7 +1117,7 @@
           }
         }
         document.getElementById("birth-stat").textContent =
-          endPoint.value.toLocaleString() + " homicides";
+          endPoint.value.toLocaleString() + t(" homicides");
       }
 
       function drawDrugWarChart() {
