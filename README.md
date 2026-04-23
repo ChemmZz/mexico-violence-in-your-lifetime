@@ -2,7 +2,7 @@
 
 Chema Gálvez
 
-Visit the page at: https://mexico-violence-in-your-lifetime.b-cdn.net/
+Visit the page at: https://chema.space/projects/mexico-interactive-viz/
 
 ## Description
 
